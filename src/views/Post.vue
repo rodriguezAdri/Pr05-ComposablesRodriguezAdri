@@ -17,32 +17,15 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import llegirPost from "../composables/llegirPost.js";
-import llegirUsers from "../composables/llegirUser.js";
+import llegirPostYUser from "../composables/llegirPostUsuari";
 
 const route = useRoute();
-const id = route.params.id; 
+const id = route.params.id;
 
-const { post, llegirPostById } = llegirPost();
-const { usuario, llegirUser } = llegirUsers();
+// Usamos la composable que obtiene el post y el usuario
+const { post, user, loadingPost, loadingUser, llegirPostById } = llegirPostYUser();
 
-
-const loadingPost = ref(true);
-const loadingUser = ref(false);
-const user = ref(null);
-
-onMounted(async () => {
-  // Cargar el post
-  loadingPost.value = true;
-  await llegirPostById(id);
-  loadingPost.value = false;
-
-  // Si el post té un userId carrega el nom de l'usuari
-  if (post.value && post.value.userId) {
-    loadingUser.value = true;
-    await llegirUser(post.value.userId);
-    user.value = usuario.value
-    loadingUser.value = false;
-  }
+onMounted(() => {
+  llegirPostById(id);  // Cargar el post y su usuario
 });
 </script>
